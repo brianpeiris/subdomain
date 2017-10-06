@@ -1,5 +1,5 @@
 try {
-  config = require('dev-config');
+  module.exports = require('./dev-config');
 }
 catch (e) {
   module.exports = {
