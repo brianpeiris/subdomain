@@ -17,3 +17,7 @@ a {
   width: 800px;
   height: 600px;
 }
+
+text {
+  cursor: pointer;
+}

@@ -42,3 +42,11 @@ block content
         chart.draw(data, options);
       });
     }
+
+    document.body.addEventListener('click', function (event) {
+      var target = event.target;
+      var text = target.textContent;
+      if (target.nodeName.toLowerCase() === 'text' && text.match(/\./)) {
+        window.open('http://' + text);
+      }
+    });

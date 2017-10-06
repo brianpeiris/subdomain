@@ -84,6 +84,10 @@ function getData(subreddits) {
   return Promise.all(subreddits.map(getSubreddit));
 }
 
+router.get('/', function(req, res, next) {
+  res.render('frontpage');
+});
+
 router.get('/r/\*', function(req, res, next) {
   const subreddits = req.path.substr(3).split('+');
   getData(subreddits).then(function (data) {
