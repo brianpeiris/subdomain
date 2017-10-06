@@ -1,5 +1,44 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1 subreddit domain stats
+  div.charts
+    each chart in charts
+      div.chart(id=chart.subreddit)
+  script(src='https://www.gstatic.com/charts/loader.js')
+  script(src='https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js')
+  script.
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawCharts);
+
+    var stringToColor = function(str) {
+      var hash = 0;
+      for (var i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      var color = '#';
+      for (var i = 0; i < 3; i++) {
+        var value = (hash >> (i * 8)) & 0xFF;
+        color += ('00' + value.toString(16)).substr(-2);
+      }
+      return color;
+    }
+
+    function drawCharts() {
+      var charts = !{JSON.stringify(charts)};
+      charts.forEach(function (chart) { 
+        chart.data = chart.data.slice(0, 20).map(row => [row[0], row[1], stringToColor(row[0])]);
+        chart.data.unshift(['domain', 'count', {role: 'style'} ]);
+        var data = google.visualization.arrayToDataTable(chart.data);
+        var options = {
+          title: '/r/' + chart.subreddit,
+          legend: {position: 'none'},
+          hAxis: {
+            format: '#',
+            title: 'submission count'
+          }
+        };
+        var chart = new google.visualization.BarChart(document.getElementById(chart.subreddit));
+        chart.draw(data, options);
+      });
+    }
